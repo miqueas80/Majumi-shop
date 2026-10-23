@@ -51,3 +51,43 @@ test('Motor de movimiento: entrada/salida reversible, motion reducido, API nativ
  assert.match(sw,/rel\.startsWith\('admin'\)/);
  assert.match(load('public/index.html'),/motion\.js\?v=5/);
 });
+
+
+test('Motor WAAPI: reapertura cancela cierre anterior sin parpadeos y reduced-motion muestra contenido',async()=>{
+ const engine=load('public/motion.js');
+ const EmptyParams=class{get(){return null}};
+ const doc=()=>({
+   documentElement:{classList:{add(){}}},querySelectorAll(){return []},
+   visibilityState:'visible'
+ });
+ const make=(reduced,dom)=>new Function('window','document','location','URLSearchParams',
+   engine+';return window.MajumiMotion;')(
+   {matchMedia:()=>({matches:reduced,addEventListener(){}})},
+   dom,{search:''},EmptyParams);
+ const motion=make(false,doc());
+ const animations=[];
+ const element={hidden:true,animate(keyframes,options){
+   let resolve;
+   const finished=new Promise(r=>resolve=r);
+   const a={keyframes,options,finished,resolve,cancel(){this.cancelled=true}};
+   animations.push(a);return a;
+ }};
+ motion.show(element,'search');
+ assert.equal(element.hidden,false);
+ motion.hide(element,'search');
+ const obsoleteExit=animations.at(-1);
+ motion.show(element,'search');
+ obsoleteExit.resolve();
+ await Promise.resolve();await Promise.resolve();
+ assert.equal(obsoleteExit.cancelled,true);
+ assert.equal(element.hidden,false);
+ motion.hide(element,'search');
+ animations.at(-1).resolve();
+ await Promise.resolve();await Promise.resolve();
+ assert.equal(element.hidden,true);
+ assert.ok(animations.every(a=>a.keyframes.every(k=>Object.keys(k).every(v=>['transform','opacity'].includes(v)))));
+ const calm=make(true,doc());
+ const instant={hidden:true};
+ calm.show(instant,'popover');assert.equal(instant.hidden,false);
+ calm.hide(instant,'popover');assert.equal(instant.hidden,true);
+});
