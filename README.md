@@ -1,5 +1,15 @@
 # Majumi Control — tienda + centro administrativo (v1)
 
+## Vista de tienda — edición visual 2
+
+La portada de Majumi Shop fue rediseñada con un lenguaje visual editorial: hero fotográfico, categorías ilustradas, fichas de producto, búsqueda con tolerancia a errores, ordenamiento, favoritos y carrito. **La versión visible en GitHub Pages es una DEMO**, no un comercio habilitado para comprar: sus ocho productos, fotos y precios son ejemplos explícitamente identificados. No se cobran pagos ni se guardan pedidos de compradores en la demo.
+
+**GitHub Pages:** en Settings → Pages, publicar la rama main desde /(root). El archivo raíz index.html redirige a public/, que contiene todos los recursos con rutas relativas y correctas para el subdirectorio del repositorio. La dirección prevista es https://miqueas80.github.io/Majumi-shop/ . Si todavía no aparece, es necesario activar Pages desde la cuenta propietaria; haber subido los archivos no lo habilita automáticamente.
+
+**Modo producción en Cloudflare Workers:** no se muestran los productos ficticios. Se solicitan los productos reales de D1 en /api/products y los pedidos se validan en /api/orders. Sin conectar D1/Worker no se puede operar una tienda real. El código original de Base44 no está disponible; por eso esta es una reconstrucción visual propia y no una copia idéntica de las pantallas internas.
+
+---
+
 Proyecto **independiente de Base44**, preparado para desplegar en **Cloudflare Workers + D1**. Incluye tienda pública y panel privado conectados a una base de datos compartida. No requiere suscripción a Base44, pero **no importa ni lee automáticamente pedidos o productos de la aplicación original**.
 
 > Estado: código de primera implementación entregado y **7 pruebas automatizadas superadas** con un simulador de la API D1 sobre SQLite de Node 22. No se ha desplegado en tu cuenta Cloudflare ni se han probado cobros reales con Mercado Pago; falta configurar credenciales y ensayar los webhooks en sandbox antes de vender.
