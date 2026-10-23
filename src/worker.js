@@ -17,8 +17,8 @@ async function shoppingAssistant(req,env){
  if(!requireOrigin(req))return fail('Origen no autorizado',403);
  if(!env.XKIRO_API_KEY)return fail('Majumi IA todavía no está configurada',503);
  const ip=req.headers.get('cf-connecting-ip')||'local';
- if(!await limit(env.DB,'assistant:'+ip,25,60*60*1000))return fail('Límite temporal de consultas alcanzado',429);
- const data=await body(req,1300),message=clean(data?.message,350);
+ if(!await limit(env.DB,'assistant:'+ip,25,60*60*1000)||!await limit(env.DB,'assistant:global',600,24*60*60*1000))return fail('Límite temporal de consultas alcanzado',429);
+ const data=await body(req,1300),message=clean(data?.message,350).replace(/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/gi,'[correo omitido]');
  if(message.length<3)return fail('Escribí qué producto estás buscando');
  const rows=await env.DB.prepare('SELECT id,name,description,category,price_cents,stock FROM products WHERE active=1 AND stock>0 ORDER BY created_at DESC LIMIT 50').all();
  const catalog=rows.results.map(x=>({id:x.id,n:x.name,c:x.category,p:(x.price_cents/100).toFixed(2),d:clean(x.description,130)}));
