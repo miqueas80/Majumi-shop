@@ -8,7 +8,7 @@ test('PWA válida, rutas relativas y caché exclusivamente público',()=>{
  assert.equal(manifest.display,'standalone');assert.equal(manifest.start_url,'./');
  const html=load('public/index.html');
  assert.match(html,/href="\.\/manifest\.webmanifest"/);
- assert.match(html,/src="\.\/store\.js\?v=5"/);
+ assert.match(html,/src="\.\/store\.js\?v=6"/);
  assert.match(html,/href="\.\/store\.css\?v=5"/);
  const sw=load('public/sw.js');assert.match(sw,/PUBLIC_ASSETS/);
  assert.match(sw,/rel\.startsWith\('admin'\)/);
