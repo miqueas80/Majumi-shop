@@ -8,8 +8,8 @@ test('PWA válida, rutas relativas y caché exclusivamente público',()=>{
  assert.equal(manifest.display,'standalone');assert.equal(manifest.start_url,'./');
  const html=load('public/index.html');
  assert.match(html,/href="\.\/manifest\.webmanifest"/);
- assert.match(html,/src="\.\/store\.js\?v=4"/);
- assert.match(html,/href="\.\/store\.css\?v=4"/);
+ assert.match(html,/src="\.\/store\.js\?v=5"/);
+ assert.match(html,/href="\.\/store\.css\?v=5"/);
  const sw=load('public/sw.js');assert.match(sw,/PUBLIC_ASSETS/);
  assert.match(sw,/rel\.startsWith\('admin'\)/);
  assert.match(sw,/url\.pathname\.includes\('\/api\/'\)/);
@@ -31,4 +31,23 @@ test('Headers y separación entre cliente y secretos',()=>{
  assert.match(load('public/_headers'),/Content-Security-Policy:/);
  assert.match(load('public/_headers'),/X-Content-Type-Options: nosniff/);
  assert.doesNotMatch(load('public/store.js'),/ADMIN_PASSWORD\s*=|MP_ACCESS_TOKEN\s*=/);
+});
+
+
+test('Motor de movimiento: entrada/salida reversible, motion reducido, API nativa y 120Hz sin bucle',()=>{
+ const src=load('public/motion.js');
+ assert.match(src,/prefers-reduced-motion:\s*reduce/);
+ assert.match(src,/IntersectionObserver/);
+ assert.match(src,/animation\.finished/);
+ assert.match(src,/translate3d/);
+ assert.match(src,/requestAnimationFrame/);
+ assert.match(src,/motionDebug/);
+ assert.doesNotMatch(src,/setInterval\s*\(/);
+ const css=load('public/store.css');
+ assert.match(css,/\.motion-reveal\.motion-visible/);
+ assert.match(css,/@media\s*\(prefers-reduced-motion:reduce\)/);
+ const sw=load('public/sw.js');
+ assert.match(sw,/motion\.js\?v=5/);
+ assert.match(sw,/rel\.startsWith\('admin'\)/);
+ assert.match(load('public/index.html'),/motion\.js\?v=5/);
 });

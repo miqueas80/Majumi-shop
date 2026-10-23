@@ -1,6 +1,6 @@
 /* MAJUMI PWA: caching limitado a recursos PUBLICOS, nunca al servidor de pedidos. */
-const CACHE='majumi-public-v4';
-const PUBLIC_ASSETS=['./','./index.html','./store.css?v=4','./store.js?v=4','./manifest.webmanifest','./icon.svg'];
+const CACHE='majumi-public-v5';
+const PUBLIC_ASSETS=['./','./index.html','./store.css?v=5','./motion.js?v=5','./store.js?v=5','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PUBLIC_ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('majumi-public-')&&k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('fetch',event=>{
@@ -12,7 +12,7 @@ self.addEventListener('fetch',event=>{
  if(!url.pathname.startsWith(scope))return;
  const rel=url.pathname.slice(scope.length);
  if(rel.startsWith('admin')||rel.startsWith('api')||rel.startsWith('checkout')||rel.startsWith('payment'))return;
- if(!['','index.html','store.css','store.js','manifest.webmanifest','icon.svg'].includes(rel))return;
+ if(!['','index.html','store.css','motion.js','store.js','manifest.webmanifest','icon.svg'].includes(rel))return;
  if(req.mode==='navigate'){
    event.respondWith(fetch(req).then(res=>res.ok?res:caches.match('./index.html')).catch(()=>caches.match('./index.html')));
    return;

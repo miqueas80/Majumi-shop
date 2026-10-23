@@ -56,3 +56,81 @@ a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}b
 .assistant-form button{border:0;border-radius:8px;background:#352735;color:white;width:46px;display:grid;place-items:center}.assistant-form button svg{width:18px}
 .assistant-privacy{font-size:9px;text-align:center;color:#84717d;padding:0 15px 12px;margin:0}
 @media(max-width:620px){.assistant-launch{right:16px;bottom:16px;padding:11px 13px}.assistant-launch>span:nth-child(2){font-size:11px}.assistant-panel{right:12px;left:12px;bottom:74px;width:auto;max-height:min(620px,calc(100dvh - 102px))}}
+
+
+/* ── Majumi Motion / pantalla de alta frecuencia ──────────────────────────
+   La cadencia la decide el navegador y la pantalla. No limitamos a 60 FPS.
+   Animaciones de desplazamiento y opacidad; nada de loops de scroll en JS. */
+:root {
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+  --motion-spring: cubic-bezier(.16, 1, .3, 1);
+  --motion-fast: 190ms;
+  --motion-medium: 360ms;
+  --motion-long: 580ms;
+}
+html{scroll-behavior:smooth}
+button,a,[role="button"]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior-y:contain}
+@media (hover:hover) and (pointer:fine) {
+  .category-card img, .product-image img, .hero-visual>img{
+    transition:transform 680ms var(--motion-spring);
+    backface-visibility:hidden;
+  }
+  .category-card:hover img { transform:scale3d(1.045,1.045,1) }
+  .product-card:hover .product-image img{transform:scale3d(1.045,1.045,1)}
+  .hero-visual:hover>img{transform:scale3d(1.018,1.018,1)}
+  .product-card:focus-within .quick-add{transform:translate3d(0,0,0);opacity:1}
+  .button, .pill, .icon-button, .wish-btn, .assistant-launch{
+    transition:transform var(--motion-medium) var(--motion-spring), background-color var(--motion-fast) ease,color var(--motion-fast) ease;
+  }
+  .button:hover, .assistant-launch:hover{transform:translate3d(0,-3px,0)}
+  .button:active,.icon-button:active,.pill:active{transform:scale(.96)}
+  .navigation a{position:relative}
+  .navigation a:after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform 350ms var(--motion-spring)}
+  .navigation a:hover:after,.navigation a:focus-visible:after{transform:scaleX(1)}
+}
+.motion-enhanced .motion-reveal{
+  opacity:0;
+  transform:translate3d(0,23px,0);
+  transition:opacity 660ms var(--motion-ease), transform 720ms var(--motion-spring);
+  transition-delay:var(--motion-delay,0ms);
+}
+.motion-enhanced .motion-reveal.motion-visible{opacity:1;transform:translate3d(0,0,0)}
+/* Precompuesto sólo durante estados con animación constante. */
+.drawer{
+  transition:transform 520ms var(--motion-spring);
+  transform:translate3d(105%,0,0);
+  backface-visibility:hidden;
+  contain:layout style;
+}
+.drawer[aria-hidden="false"]{transform:translate3d(0,0,0)}
+.motion-enhanced .modal-card,.motion-enhanced .page-shade{animation:none}
+.category-card .round-arrow{transition:transform var(--motion-medium) var(--motion-spring)}
+.quick-add{transition:opacity 290ms var(--motion-ease),transform 360ms var(--motion-spring)}
+.hero-copy h1,.hero-copy p,.hero-copy .hero-actions,.hero-kicker{
+  animation:motion-intro .9s both var(--motion-spring);
+}
+.hero-kicker{animation-delay:60ms}
+.hero-copy h1{animation-delay:135ms}
+.hero-copy p{animation-delay:195ms}
+.hero-copy .hero-actions{animation-delay:270ms}
+.hero-visual{animation:motion-hero 900ms both var(--motion-spring)}
+@keyframes motion-intro{from{opacity:0;transform:translate3d(0,22px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes motion-hero{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+.motion-diagnostics{
+  position:fixed;z-index:9999;top:10px;left:10px;
+  background:rgba(26,21,27,.92);border:1px solid #b895ad;
+  color:#fff;font:600 11px/1.6 system-ui,sans-serif;padding:8px 12px;
+  border-radius:8px;max-width:min(410px,calc(100vw - 20px));pointer-events:none;
+}
+@media (max-width:620px){
+  .drawer{transition-duration:430ms}
+  .hero-copy h1,.hero-visual{animation-duration:680ms}
+  .motion-enhanced .motion-reveal{transition-duration:490ms;transform:translate3d(0,16px,0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-copy h1,.hero-copy p,.hero-copy .hero-actions,.hero-kicker,.hero-visual{animation:none!important}
+  .motion-enhanced .motion-reveal{opacity:1!important;transform:none!important;transition:none!important}
+  .drawer{transition:none!important}
+  .quick-add{transition:none!important}
+}

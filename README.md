@@ -1,3 +1,13 @@
+## Majumi Motion Engine — animaciones para pantallas de hasta 120 Hz o más
+
+La versión 5 incorpora `public/motion.js`: transiciones con Web Animations API y CSS `transform`/`opacity`, entradas progresivas con `IntersectionObserver`, menú/buscador/carrito/asistente/modales reversibles, efectos de pulsación y detalles en productos. El motor usa el refresco natural del navegador y **no fija un límite de 60 FPS**. Respeta `prefers-reduced-motion`. También agrega microinteracciones en el panel administrativo.
+
+**Para medir** en el teléfono: visitá `/Majumi-shop/public/?motionDebug=1` y observá el contador diagnóstico de Hz y cuadros tardíos. Esa muestra se realiza una única vez, no ejecuta bucles continuos ni garantiza 120 FPS. Los resultados dependen de pantalla, navegador, ahorro de energía, carga y recursos.
+
+La PWA actualiza su caché pública a la revisión v5. Ninguna operación de pedidos, sesiones ni pagos se guarda offline.
+
+---
+
 # Majumi IA · recomendaciones con modelo externo (opcional)
 
 La interfaz ofrece un asistente de productos. En GitHub Pages usa únicamente recomendaciones locales de demostración; **no es IA generativa real**. En Cloudflare Worker se activa usando la API oficial de xKiro: https://docs.xkiro.com/api/chat-completions/ .
