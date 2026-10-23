@@ -1,6 +1,6 @@
 /* MAJUMI PWA: caching limitado a recursos PUBLICOS, nunca al servidor de pedidos. */
-const CACHE='majumi-public-v6';
-const PUBLIC_ASSETS=['./','./index.html','./store.css?v=5','./motion.js?v=5','./store.js?v=6','./manifest.webmanifest','./icon.svg'];
+const CACHE='majumi-public-v7';
+const PUBLIC_ASSETS=['./','./index.html','./store.css?v=7','./motion.js?v=5','./store.js?v=7','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(PUBLIC_ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('majumi-public-')&&k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('fetch',event=>{

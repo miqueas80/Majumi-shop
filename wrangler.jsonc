@@ -22,6 +22,7 @@
     "STORE_NAME": "Majumi Shop",
     "STORE_PUBLIC_URL": "",
     "MP_COLLECTOR_ID": "",
-    "XKIRO_MODEL": "deepseek/deepseek-v3.2"
+    "XKIRO_MODEL": "deepseek/deepseek-v3.2",
+    "COMMERCE_ENABLED": "false"
   }
 }

@@ -1,3 +1,15 @@
+## Majumi Shop — pre-lanzamiento sin inscripción comercial
+
+La tienda está en modo **showroom / desarrollo**. No admite ventas, cobros, pedidos reales, reservas vinculantes ni órdenes automáticas a proveedores. Esto no significa una exención tributaria: antes de operar comercialmente deberá haber un adulto o titular habilitado, condiciones legales y la integración comercial verificada.
+
+- La variable `COMMERCE_ENABLED` es `"false"` en `wrangler.jsonc` y, si no se configura, el servidor también bloquea operaciones.
+- Se puede administrar el catálogo preparatorio; el backend comercial bloquea crear pedidos, enlaces y registros de pago, enviar órdenes a proveedores y webhooks nuevos.
+- GitHub Pages mantiene la demostración visual, favoritos y carrito local sin pedir datos bancarios. Los precios y productos de ejemplo no son ofertas.
+- **Majumi IA sigue operativa** y su Worker `majumi-ai-gateway` y secretos no se modificaron.
+- La futura activación comercial será explícita, luego de habilitar al titular y comprobar pagos, proveedores, impuestos y protección del consumidor.
+
+---
+
 ## Majumi IA conectada — servicio propio en Cloudflare (23/10/2026)
 
 Existe un Worker separado del sistema NEXUS, desplegado como `majumi-ai-gateway`. URL pública del API: `https://majumi-ai-gateway.proyectomj11.workers.dev`; su estado técnico se consulta en `GET /health`. GitHub Pages llama `POST /api/assistant` con un JSON `{"message":"Busco un regalo"}` y origen permitido `https://miqueas80.github.io`.

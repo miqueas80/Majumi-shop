@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {Dat
 const schema=readFileSync(new URL('../migrations/0001_initial.sql',import.meta.url),'utf8');const imagesMigration=readFileSync(new URL('../migrations/0002_product_images.sql',import.meta.url),'utf8');
 const ORIGIN='https://majumi.test';
 function mockDB(){const sqlite=new DatabaseSync(':memory:');sqlite.exec('PRAGMA foreign_keys=ON');sqlite.exec(schema);sqlite.exec(imagesMigration);const prepare=sql=>{const bound={sql,args:[],bind(...args){this.args=args;return this},first(){return sqlite.prepare(sql).get(...this.args)||null},all(){return {results:sqlite.prepare(sql).all(...this.args)}},run(){return {meta:{changes:sqlite.prepare(sql).run(...this.args).changes}}}};return bound;};return {sqlite,prepare,async batch(stmts){sqlite.exec('BEGIN');try{const results=stmts.map(s=>s.run());sqlite.exec('COMMIT');return results}catch(e){sqlite.exec('ROLLBACK');throw e;}}};}
-const makeEnv=()=>({DB:mockDB(),ADMIN_EMAIL:'admin@majumi.test',ADMIN_PASSWORD:'super_clave_segura_de_mas_de_16_caracteres'});
+const makeEnv=()=>({COMMERCE_ENABLED:'true',DB:mockDB(),ADMIN_EMAIL:'admin@majumi.test',ADMIN_PASSWORD:'super_clave_segura_de_mas_de_16_caracteres'});
 async function call(env,path,method='GET',data,token,overrideOrigin=ORIGIN){const headers={origin:overrideOrigin};if(data!==undefined)headers['content-type']='application/json';if(token)headers.cookie=token;const req=new Request(ORIGIN+'/api'+path,{method,headers,body:data===undefined?undefined:JSON.stringify(data)});const res=await worker.fetch(req,env);let value;try{value=await res.json()}catch{value={}}return {status:res.status,data:value,cookie:res.headers.get('set-cookie')?.split(';')[0]};}
 async function signIn(env){const r=await call(env,'/admin/login','POST',{email:env.ADMIN_EMAIL,password:env.ADMIN_PASSWORD});assert.equal(r.status,200);return r.cookie;}
 async function addSupplier(env,cookie){const a=await call(env,'/admin/suppliers','POST',{name:'Mayorista Entre Ríos',phone:'343111222'},cookie);assert.equal(a.status,201);return a.data.id;}
@@ -46,4 +46,25 @@ test('Majumi IA respeta origen, cupo, falta de clave y sólo transmite catálogo
   assert.equal(out.status,200);assert.equal(out.data.source,'xkiro');assert.match(out.data.answer,/Bolso de cuero/);
   assert.match(JSON.stringify(sentBody),/Bolso de cuero/);assert.ok(!JSON.stringify(sentBody).includes(env.ADMIN_PASSWORD));assert.ok(!JSON.stringify(sentBody).includes(env.XKIRO_API_KEY));
  }finally{globalThis.fetch=original;}
+});
+
+test('el pre-lanzamiento deja preparar catálogo pero impide cobrar y pedir',async()=>{
+ const env=makeEnv();env.COMMERCE_ENABLED='false';env.MP_ACCESS_TOKEN='fake';env.MP_WEBHOOK_SECRET='fake';
+ const conf=await call(env,'/config');
+ assert.equal(conf.data.commerce_enabled,false);assert.equal(conf.data.mercadopago_enabled,false);
+ assert.equal((await call(env,'/health')).data.mode,'prelaunch');
+ const auth=await signIn(env),supplier=await addSupplier(env,auth),product=await addProduct(env,auth,supplier);
+ assert.equal((await call(env,'/products')).data.products.length,1);
+ const blocked=await call(env,'/orders','POST',{customer_name:'Prueba',customer_phone:'3431234567',delivery_method:'pickup',payment_method:'manual',items:[{product_id:product,quantity:1}]});
+ assert.equal(blocked.status,403);assert.match(blocked.data.error,/pre-lanzamiento/);
+ assert.equal((await call(env,'/admin/orders/fake/payment','POST',{note:'pagado'},auth)).status,403);
+ assert.equal((await call(env,'/admin/orders/fake/prepare','POST',{},auth)).status,403);
+ assert.equal((await call(env,'/admin/orders/fake/payment-link','POST',{},auth)).status,403);
+ assert.equal((await call(env,'/admin/purchase-orders/fake/sent','POST',{},auth)).status,403);
+ assert.equal((await call(env,'/webhooks/mercadopago','POST',{type:'payment'})).status,403);
+});
+test('el modo pre-lanzamiento está activado por defecto, incluso sin configuración',async()=>{
+ const env=makeEnv();delete env.COMMERCE_ENABLED;
+ assert.equal((await call(env,'/orders','POST',{items:[]})).status,403);
+ assert.equal((await call(env,'/config')).data.commerce_enabled,false);
 });

@@ -1,6 +1,9 @@
 import {json,fail,uuid,sha,same,iso,clean,parseOrder,normalizeProduct,verifyMP} from './core.js';
 const SESSION_COOKIE='majumi_admin';
 const COOKIE_TTL=8*60*60;
+// Sin titular comercial habilitado: los pedidos y pagos están desactivados por defecto.
+const commerceEnabled=env=>env.COMMERCE_ENABLED==='true';
+const prelaunchOnly=()=>fail('Majumi está en pre-lanzamiento: todavía no recibimos pedidos ni pagos reales.',403);
 function route(method,path){return method+' '+path}
 function cookie(req,name){return (req.headers.get('cookie')||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(name+'='))?.slice(name.length+1)||'';}
 function secureCookie(token,maxAge=COOKIE_TTL){return `${SESSION_COOKIE}=${token}; HttpOnly; Secure; SameSite=Strict; Path=/api/admin; Max-Age=${maxAge}`;}
@@ -66,18 +69,18 @@ async function markSent(db,id){const po=await db.prepare('SELECT po.*,o.status A
 async function orderText(db,id){const po=await db.prepare('SELECT po.id,po.status,po.order_id,s.name,s.phone,s.email,o.code,o.delivery_method,o.delivery_address,o.customer_name FROM purchase_orders po JOIN suppliers s ON s.id=po.supplier_id JOIN orders o ON o.id=po.order_id WHERE po.id=?').bind(id).first();if(!po)return null;const items=await db.prepare('SELECT oi.name,oi.sku,poi.quantity FROM purchase_order_items poi JOIN order_items oi ON oi.id=poi.order_item_id WHERE poi.po_id=?').bind(id).all();return {supplier:po,items:items.results,text:`MAJUMI SHOP — SOLICITUD A PROVEEDOR\nPedido ${po.code}\nProveedor: ${po.name}\n${items.results.map(x=>`${x.quantity} x ${x.name} (SKU: ${x.sku})`).join('\n')}\n\nPor favor confirmar disponibilidad, costo mayorista y fecha estimada. Pedido sujeto a confirmación. No realizar envío sin autorización.`};}
 async function dashboard(db,url){const status=clean(url.searchParams.get('status'),30),q=clean(url.searchParams.get('q'),100),page=Math.max(1,Math.min(500,Number(url.searchParams.get('page'))||1));let where='WHERE 1=1',args=[];if(status&&status!=='all'){if(status==='awaiting')where+=' AND status=? AND payment_status=?',args.push('pending','paid');else where+=' AND status=?',args.push(status);}if(q){where+=' AND (code LIKE ? OR customer_name LIKE ? OR customer_phone LIKE ?)';args.push(...Array(3).fill('%'+q+'%'));}const [orders,count,stats]=await Promise.all([db.prepare(`SELECT id,code,customer_name,customer_phone,created_at,total_cents,status,payment_status,payment_method,payment_source FROM orders ${where} ORDER BY created_at DESC LIMIT 30 OFFSET ?`).bind(...args,(page-1)*30).all(),db.prepare(`SELECT COUNT(*) n FROM orders ${where}`).bind(...args).first(),db.prepare(`SELECT COUNT(*) total,COALESCE(SUM(CASE WHEN status='pending' AND payment_status='paid' THEN 1 ELSE 0 END),0) awaiting,COALESCE(SUM(CASE WHEN payment_status='pending' THEN 1 ELSE 0 END),0) pending_payments,COALESCE(SUM(CASE WHEN payment_status='paid' THEN total_cents ELSE 0 END),0) paid_cents, COALESCE(SUM(CASE WHEN status IN ('approved','preparing','ready') THEN 1 ELSE 0 END),0) active_orders FROM orders`).first()]);return json({orders:orders.results,total:count.n,stats,page});}
 export default {async fetch(req,env){try{if(!env.DB)return fail('Falta base de datos D1',503);const url=new URL(req.url),p=url.pathname,m=req.method;
- if(p==='/api/health'&&m==='GET')return json({ok:true,app:'majumi-control'});
+ if(p==='/api/health'&&m==='GET')return json({ok:true,app:'majumi-control',mode:commerceEnabled(env)?'commerce':'prelaunch'});
  if(p==='/api/products'&&m==='GET')return await productsPublic(env.DB);
  if(p==='/api/assistant'&&m==='POST')return await shoppingAssistant(req,env);
- if(p==='/api/config'&&m==='GET')return json({mercadopago_enabled:!!(env.MP_ACCESS_TOKEN&&env.MP_WEBHOOK_SECRET)});
- if(p==='/api/orders'&&m==='POST'){if(!requireOrigin(req))return fail('Origen no autorizado',403);return await createOrder(req,env);}
- if(p==='/api/webhooks/mercadopago'&&m==='POST')return await mpWebhook(req,env);
+ if(p==='/api/config'&&m==='GET')return json({commerce_enabled:commerceEnabled(env),mercadopago_enabled:commerceEnabled(env)&&!!(env.MP_ACCESS_TOKEN&&env.MP_WEBHOOK_SECRET)});
+ if(p==='/api/orders'&&m==='POST'){if(!requireOrigin(req))return fail('Origen no autorizado',403);if(!commerceEnabled(env))return prelaunchOnly();return await createOrder(req,env);}
+ if(p==='/api/webhooks/mercadopago'&&m==='POST'){if(!commerceEnabled(env))return prelaunchOnly();return await mpWebhook(req,env);}
  if(p==='/api/admin/login'&&m==='POST')return await login(req,env);
  if(p.startsWith('/api/admin/')){
   if(!await authenticated(req,env))return fail('Sesión caducada: ingresá nuevamente',401);
   if(m!=='GET'&&!requireOrigin(req))return fail('Origen no autorizado',403);
   if(p==='/api/admin/logout'&&m==='POST')return await logout(req,env);
-  if(p==='/api/admin/me'&&m==='GET')return json({authenticated:true,email:env.ADMIN_EMAIL,mercadopago_enabled:!!(env.MP_ACCESS_TOKEN&&env.MP_WEBHOOK_SECRET)});
+  if(p==='/api/admin/me'&&m==='GET')return json({authenticated:true,email:env.ADMIN_EMAIL,commerce_enabled:commerceEnabled(env),mercadopago_enabled:commerceEnabled(env)&&!!(env.MP_ACCESS_TOKEN&&env.MP_WEBHOOK_SECRET)});
   if(p==='/api/admin/orders'&&m==='GET')return await dashboard(env.DB,url);
   if(p==='/api/admin/products'&&m==='GET')return json({products:(await env.DB.prepare('SELECT * FROM products ORDER BY created_at DESC LIMIT 500').all()).results});
   if(p==='/api/admin/suppliers'&&m==='GET')return json({suppliers:(await env.DB.prepare('SELECT * FROM suppliers ORDER BY name LIMIT 500').all()).results});
@@ -87,8 +90,8 @@ export default {async fetch(req,env){try{if(!env.DB)return fail('Falta base de d
   if(match&&m==='PATCH'){const v=normalizeProduct(await body(req));const r=await env.DB.prepare('UPDATE products SET sku=?,name=?,description=?,category=?,price_cents=?,stock=?,supplier_id=?,active=?,image_url=?,updated_at=? WHERE id=?').bind(v.sku,v.name,v.description,v.category,v.price_cents,v.stock,v.supplier_id,v.active,v.image_url,iso(),match[1]).run();return r.meta?.changes?json({ok:true}):fail('Producto inexistente',404);}
   match=p.match(/^\/api\/admin\/orders\/([a-z0-9-]+)$/i);if(match&&m==='GET'){const o=await detail(env.DB,match[1]);return o?json({order:o}):fail('Pedido inexistente',404);}
   match=p.match(/^\/api\/admin\/orders\/([a-z0-9-]+)\/(status|payment|prepare|payment-link)$/i);
-  if(match&&m==='POST'){const id=match[1],op=match[2];if(op==='status'){const v=await body(req);return await changeStatus(env.DB,id,clean(v.action,30));}if(op==='payment'){const v=await body(req);return await manualPayment(env.DB,id,clean(v.note,250));}if(op==='prepare')return await prepareSuppliers(env.DB,id);if(op==='payment-link'){const order=await detail(env.DB,id);if(!order)return fail('Pedido inexistente',404);if(order.payment_method!=='mercadopago'||order.payment_status==='paid')return fail('Pedido no habilitado para crear enlace',409);if(order.payment_link)return json({ok:true,payment_url:order.payment_link});const lines=order.items.map(i=>({sku:i.sku,name:i.name,quantity:i.quantity,price_cents:i.unit_price_cents}));const p=await createPreference(env,id,lines,order.customer_email);return json({ok:true,payment_url:p.init_point});}}
-  match=p.match(/^\/api\/admin\/purchase-orders\/([a-z0-9-]+)\/(text|sent)$/i);if(match){if(match[2]==='text'&&m==='GET'){const textData=await orderText(env.DB,match[1]);return textData?json(textData):fail('Orden inexistente',404);}if(match[2]==='sent'&&m==='POST')return await markSent(env.DB,match[1]);}
+  if(match&&m==='POST'){if(!commerceEnabled(env))return prelaunchOnly();const id=match[1],op=match[2];if(op==='status'){const v=await body(req);return await changeStatus(env.DB,id,clean(v.action,30));}if(op==='payment'){const v=await body(req);return await manualPayment(env.DB,id,clean(v.note,250));}if(op==='prepare')return await prepareSuppliers(env.DB,id);if(op==='payment-link'){const order=await detail(env.DB,id);if(!order)return fail('Pedido inexistente',404);if(order.payment_method!=='mercadopago'||order.payment_status==='paid')return fail('Pedido no habilitado para crear enlace',409);if(order.payment_link)return json({ok:true,payment_url:order.payment_link});const lines=order.items.map(i=>({sku:i.sku,name:i.name,quantity:i.quantity,price_cents:i.unit_price_cents}));const p=await createPreference(env,id,lines,order.customer_email);return json({ok:true,payment_url:p.init_point});}}
+  match=p.match(/^\/api\/admin\/purchase-orders\/([a-z0-9-]+)\/(text|sent)$/i);if(match){if(match[2]==='text'&&m==='GET'){const textData=await orderText(env.DB,match[1]);return textData?json(textData):fail('Orden inexistente',404);}if(match[2]==='sent'&&m==='POST'){if(!commerceEnabled(env))return prelaunchOnly();return await markSent(env.DB,match[1]);}}
   return fail('Ruta administrativa inexistente',404);
  }
  if(p.startsWith('/api/'))return fail('Ruta API inexistente',404);
