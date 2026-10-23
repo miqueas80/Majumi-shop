@@ -108,27 +108,58 @@ function openAssistant(){assistantNode.hidden=false;motion?.show(assistantNode,'
 function closeAssistant(){if(motion)motion.hide(assistantNode,'popover');else assistantNode.hidden=true;assistantToggle.setAttribute('aria-expanded','false');assistantToggle.focus();}
 function assistantBubble(text,kind='from-ai'){const el=document.createElement('p');el.className='assistant-bubble '+kind;el.textContent=String(text||'');$('assistantMessages').appendChild(el);el.scrollIntoView({block:'nearest'});return el;}
 let assistantBusy=false;
+const remoteMajumiAI = 'https://majumi-ai-gateway.proyectomj11.workers.dev';
+function suggestLocally(q){
+ const matches=state.products.map(p=>({p,score:matchScore(p,q)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
+ return matches.length?
+  'La IA no está disponible ahora; estos son resultados del buscador local, no de un modelo generativo: '+matches.map(x=>x.p.name+' ('+money(x.p.price_cents)+')').join(', ')+'. Los productos y precios son ilustrativos.':
+  'La IA no está disponible ahora. Probá buscando accesorios, belleza, tecnología u hogar en el catálogo.';
+}
+async function checkMajumiAI(){
+ const label=$('assistantStatus');
+ if(!pagesDemo){label.textContent='IA conectada al catálogo cuando esté configurada';return;}
+ label.textContent='Verificando IA…';
+ try{
+  const result=await fetch(remoteMajumiAI+'/health',{cache:'no-store',signal:AbortSignal.timeout(6000)});
+  const status=await result.json();
+  label.textContent=result.ok&&status.ok?'IA real · catálogo de muestra':'Buscador local de respaldo';
+ }catch{label.textContent='Buscador local de respaldo';}
+}
 async function askAssistant(question){
  const q=String(question||'').trim().slice(0,350);
  if(q.length<3||assistantBusy)return;
  assistantBubble(q,'from-customer');
- if(pagesDemo){
-  const matches=state.products.map(p=>({p,score:matchScore(p,q)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
-  assistantBubble(matches.length?'Esta es una recomendación del buscador local de demostración, no de una IA generativa. Podés mirar: '+matches.map(x=>x.p.name+' ('+money(x.p.price_cents)+')').join(', ')+'.':'Esta es una demostración local. No encontré coincidencias claras: probá con accesorios, belleza o tecnología.');
-  searchFor(q);return;
- }
  assistantBusy=true;
- const send=$('assistantForm').querySelector('button[type=submit]');send.disabled=true;
- const pending=assistantBubble('Buscando opciones para vos…');
+ const send=$('assistantForm').querySelector('button[type=submit]');
+ send.disabled=true;
+ const pending=assistantBubble('Majumi IA está buscando opciones para vos…');
  try{
-  const r=await fetch('/api/assistant',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({message:q}),signal:AbortSignal.timeout(12000)});
+  const endpoint=pagesDemo?remoteMajumiAI+'/api/assistant':'/api/assistant';
+  const r=await fetch(endpoint,{
+    method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({message:q}),signal:AbortSignal.timeout(16000)
+  });
   const data=await r.json().catch(()=>({}));
-  pending.textContent=r.ok&&typeof data.answer==='string'?data.answer:(data.error||'El asistente no está disponible ahora. Podés usar el buscador de productos.');
- }catch{pending.textContent='No pudimos conectar con Majumi IA. Probá de nuevo o buscá en el catálogo.';}
- finally{send.disabled=false;assistantBusy=false;}
+  if(!r.ok)throw new Error(data.error||'No se pudo obtener la respuesta');
+  if(typeof data.answer!=='string'||!data.answer.trim())throw new Error('Respuesta vacía');
+  pending.textContent=data.answer;
+  $('assistantStatus').textContent=
+    data.provider==='cloudflare-ai'?'IA real · Cloudflare':
+    data.provider==='xkiro'?'IA real · xKiro':
+    'Catálogo de la tienda';
+  if(data.catalog==='demo'){
+    pending.textContent+='\n\n✳ Importante: productos y precios de ejemplo, no ventas reales.';
+  }
+ }catch(error){
+  pending.textContent=pagesDemo?suggestLocally(q):'No pudimos conectar con Majumi IA. Podés usar la búsqueda de productos.';
+  $('assistantStatus').textContent='Buscador local de respaldo';
+ }finally{send.disabled=false;assistantBusy=false;}
 }
+
 assistantToggle.addEventListener('click',()=>(assistantNode.hidden||motion?.isClosing(assistantNode))?openAssistant():closeAssistant());
 $('assistantClose').addEventListener('click',closeAssistant);
 $('assistantForm').addEventListener('submit',ev=>{ev.preventDefault();const field=$('assistantInput');const value=field.value;field.value='';askAssistant(value);});
 document.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>askAssistant(b.dataset.ask)));
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!assistantNode.hidden)closeAssistant();});
+
+checkMajumiAI();
