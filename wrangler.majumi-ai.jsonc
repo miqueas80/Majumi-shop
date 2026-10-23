@@ -1,0 +1,18 @@
+{
+  "name": "majumi-ai-gateway",
+  "main": "workers/majumi-ai.js",
+  "compatibility_date": "2026-10-22",
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "majumi_control",
+      "database_id": "e13799d1-a215-4d4f-8270-106d51ee8dd1"
+    }
+  ],
+  "vars": {
+    "XKIRO_MODEL": "deepseek/deepseek-v3.2"
+  }
+}
