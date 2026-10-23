@@ -1,0 +1,19 @@
+MAJUMI CONTROL — PASOS RÁPIDOS
+================================
+
+1. Extraer el ZIP.
+2. Abrir la carpeta majumi-control con VS Code.
+3. Instalar Node.js 22+ (si todavía no está instalado).
+4. Ejecutar npm install y npm test.
+5. Iniciar sesión en Cloudflare: npx wrangler login
+6. Crear D1: npx wrangler d1 create majumi_control
+7. Reemplazar database_id en wrangler.jsonc por el ID retornado.
+8. Copiar .dev.vars.example como .dev.vars y configurar las credenciales privadas.
+9. Ejecutar npm run db:local y npm run dev.
+10. Ingresar a http://localhost:8787/admin.html
+11. Crear proveedor y productos; probar en http://localhost:8787/
+
+Para publicar en producción seguir el README completo.
+El archivo index.html suelto NO alcanza: hace falta ejecutar el Worker y la base D1.
+Mercado Pago es opcional y NO está activado por defecto.
+NO hay pedidos ni productos de Base44 cargados automáticamente.

@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "majumi-control",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-16",
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "d1_databases": [ { "binding": "DB", "database_name": "majumi_control", "database_id": "REEMPLAZAR_CON_ID_D1", "migrations_dir": "migrations" } ],
+  "vars": { "STORE_NAME": "Majumi Shop", "STORE_PUBLIC_URL": "", "MP_COLLECTOR_ID": "" }
+}
