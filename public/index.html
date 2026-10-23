@@ -1,1 +1,95 @@
-<!doctype html><html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#281c40"><meta name="description" content="Majumi Shop, tu tienda online"><title>Majumi Shop · Tienda</title><link rel="stylesheet" href="./store.css"></head><body><div class="announcement">✦ MAJUMI SHOP · Lo que buscás, en un solo lugar ✦</div><header><a class="logo" href="./">M<span>✦</span><strong>MAJUMI <small>SHOP</small></strong></a><div class="header-right"><a href="./admin.html" class="adminlink">Acceso administrador</a><button id="cartButton" class="cart-button">Mi carrito <span id="count">0</span></button></div></header><div id="pagesNotice" hidden style="margin:0 auto;padding:13px 22px;background:#fef4dd;color:#593c06;text-align:center;font-size:14px;line-height:1.5"><strong>VISTA PREVIA EN GITHUB PAGES.</strong> El diseño de la tienda está publicado; catálogo, pedidos, pagos y administración requieren conectar Cloudflare Workers + D1.</div><main><section class="hero"><div class="hero-text"><div class="eyebrow">✧ BIENVENIDO A MAJUMI SHOP</div><h1>Encontrá eso que <em>te encanta.</em></h1><p>Una forma simple y segura de elegir tus favoritos. Pedidos organizados y atención personalizada.</p><a class="browse" href="#catalogo">Explorar catálogo →</a></div><div class="hero-art"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><span>M<span>✦</span></span><div class="float-star">✦</div></div></section><section class="catalog" id="catalogo"><div><div class="eyebrow">✧ CURADO PARA VOS</div><h2>Nuestro catálogo</h2><p>Productos y precios administrados directamente por Majumi Shop.</p></div><label class="search">⌕ <input type="search" id="search" placeholder="Buscar productos, categorías..."></label><div id="products" class="products-grid"><p class="empty">Cargando productos...</p></div></section></main><footer><strong>MAJUMI SHOP</strong><p>Compras con atención personalizada. Los envíos y la disponibilidad se confirman al procesar el pedido.</p></footer><div id="shade" class="shade" hidden><div class="drawer"><div class="drawer-top"><h2 id="drawerTitle">Mi carrito</h2><button id="closeDrawer" aria-label="Cerrar">×</button></div><div id="drawerContent" class="drawer-content"></div></div></div><div id="notice" class="notice" hidden></div><script type="module" src="./store.js"></script><script>if(location.hostname.endsWith(".github.io")){document.getElementById("pagesNotice").hidden=false;const a=document.querySelector(".adminlink");if(a){a.textContent="Administración: requiere servidor";a.removeAttribute("href");a.setAttribute("aria-disabled","true");a.style.opacity="0.6";}}</script></body></html>
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f5f2">
+<meta name="description" content="Majumi Shop. Descubrí inspiración, tendencias y productos para regalarte o regalar.">
+<meta property="og:title" content="Majumi Shop | Cosas lindas para cada día">
+<meta property="og:description" content="Una tienda para descubrir lo que te encanta.">
+<title>Majumi Shop — Encontrá tu próximo favorito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;650;700;750&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./store.css?v=2">
+</head>
+<body>
+<svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.2"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M4.5 8h15l-1.2 12h-12L4.5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 9c0 5.1-8.8 11-8.8 11S3.2 14.1 3.2 9a4.6 4.6 0 0 1 8.8-1.8A4.6 4.6 0 0 1 20.8 9Z"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 5h12v12H2zM14 9h4l4 4v4h-8"/><circle cx="6.5" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 8 4v6c0 5-3.6 8.3-8 10-4.4-1.7-8-5-8-10V6Z"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M4 4h16v13H9l-5 4V4Z"/><path d="M8 9h8m-8 4h5"/></symbol>
+<symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.8" r=".7" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+</svg>
+
+<div class="announcement"><div class="wide announcement-inner"><span class="announce-star">✳</span> BIENVENIDA A TU NUEVA TIENDA FAVORITA <span class="announce-separator">·</span> COMPRAS CON ATENCIÓN PERSONALIZADA <span class="announce-star">✳</span></div></div>
+<header class="header" id="top">
+  <div class="wide header-inner">
+    <button class="icon-button mobile-menu" id="menuToggle" aria-label="Abrir menú" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
+    <a class="brand" href="./" aria-label="Majumi Shop, inicio"><span class="brand-star">✳</span><span class="brand-main">majumi<span class="brand-dot">.</span><small>SHOP</small></span></a>
+    <nav class="navigation" aria-label="Categorías principales">
+      <a href="#colecciones">Colecciones</a>
+      <a href="#favoritos" data-go="Todos">Novedades</a>
+      <a href="#favoritos" data-go="Accesorios">Accesorios</a>
+      <a href="#favoritos" data-go="Belleza">Belleza</a>
+      <a href="#nosotros">Sobre Majumi</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="searchToggle" aria-label="Buscar productos"><svg><use href="#i-search"/></svg></button>
+      <button class="icon-button heart-header" id="favoritesToggle" aria-label="Ver favoritos"><svg><use href="#i-heart"/></svg><span class="tiny-count" id="favoriteCount" hidden>0</span></button>
+      <button class="icon-button bag-button" id="cartToggle" aria-label="Abrir carrito"><svg><use href="#i-bag"/></svg><span class="tiny-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <div class="search-panel" id="searchPanel" hidden><div class="wide search-panel-inner"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="globalSearch" placeholder="¿Qué estás buscando hoy? Probá 'regalo', 'auriculares', 'perfume'..." autocomplete="off" aria-label="Buscar productos"><button id="searchClose" class="icon-button" aria-label="Cerrar búsqueda"><svg><use href="#i-close"/></svg></button></div><div class="wide suggestions"><span>Búsquedas que inspiran:</span><button data-suggest="regalo">Ideas para regalar</button><button data-suggest="accesorios">Accesorios</button><button data-suggest="belleza">Belleza</button></div></div>
+  <div class="mobile-nav" id="mobileNav" hidden><a href="#colecciones">Colecciones</a><a href="#favoritos">Novedades</a><a href="#favoritos" data-go="Accesorios">Accesorios</a><a href="#favoritos" data-go="Belleza">Belleza</a><a href="#nosotros">Sobre Majumi</a></div>
+</header>
+
+<main>
+  <section class="hero wide" aria-label="Bienvenida">
+    <div class="hero-copy"><div class="hero-kicker"><span></span> UN UNIVERSO DE COSAS LINDAS</div><h1>Tu estilo.<br>Tu mundo.<br><em>Tu Majumi.</em></h1><p>Descubrí esos detalles que hacen especial lo cotidiano. Novedades, favoritos y pequeños hallazgos, todos en un solo lugar.</p><div class="hero-actions"><a class="button button-dark" href="#favoritos">Explorar la tienda <svg><use href="#i-arrow"/></svg></a><a class="hero-link" href="#colecciones">Ver colecciones <span>↗</span></a></div><div class="hero-stamp"><span class="stamp-asterisk">✳</span><span>Elegido<br>con amor</span></div></div>
+    <div class="hero-visual"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85" alt="Selección de moda y accesorios de estilo editorial" fetchpriority="high"><div class="hero-caption"><span>01 / 03</span><span>UN POCO DE TODO,<br>MUCHO DE VOS.</span></div><div class="hero-overlay-label">new things, good feelings <span>✳</span></div></div>
+  </section>
+
+  <div class="trust-strip"><div class="wide trust-inner"><div><svg><use href="#i-sparkle"/></svg><span>Hallazgos que enamoran</span></div><span class="trust-dot">✳</span><div><svg><use href="#i-message"/></svg><span>Atención personalizada</span></div><span class="trust-dot">✳</span><div><svg><use href="#i-shield"/></svg><span>Pedidos con claridad</span></div></div></div>
+
+  <section class="section wide categories-section" id="colecciones"><div class="section-heading"><div><p class="eyebrow">✳ ENCONTRÁ TU VIBE</p><h2>Un mundo para <em>descubrir.</em></h2></div><a href="#favoritos" class="text-link" data-go="Todos">Ver todos los productos <svg><use href="#i-arrow"/></svg></a></div>
+    <div class="category-grid">
+      <a class="category-card category-one" href="#favoritos" data-go="Accesorios"><img loading="lazy" src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=82" alt="Cartera y accesorios de moda"><span class="category-label"><small>EXPLORAR</small><strong>Accesorios</strong></span><span class="round-arrow">↗</span></a>
+      <a class="category-card category-two" href="#favoritos" data-go="Belleza"><img loading="lazy" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=82" alt="Productos de belleza y cuidado personal"><span class="category-label"><small>RITUALES FAVORITOS</small><strong>Belleza</strong></span><span class="round-arrow">↗</span></a>
+      <a class="category-card category-three" href="#favoritos" data-go="Tecnología"><img loading="lazy" src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=900&q=82" alt="Auriculares y accesorios tecnológicos"><span class="category-label"><small>PARA TU DÍA A DÍA</small><strong>Tecnología</strong></span><span class="round-arrow">↗</span></a>
+    </div>
+  </section>
+
+  <section class="section wide products-section" id="favoritos">
+    <div class="section-heading products-title"><div><p class="eyebrow">✳ CURADURÍA MAJUMI</p><h2>Lo que te va a <em>encantar.</em></h2><p class="section-description">Un espacio para elegir tus próximos favoritos.</p></div><span class="product-count" id="productCount">Cargando colección...</span></div>
+    <div class="catalog-bar"><div class="filter-pills" id="categoryFilters" aria-label="Filtrar productos"><button class="pill is-active" data-filter="Todos" aria-pressed="true">Todo</button><button class="pill" data-filter="Accesorios" aria-pressed="false">Accesorios</button><button class="pill" data-filter="Belleza" aria-pressed="false">Belleza</button><button class="pill" data-filter="Tecnología" aria-pressed="false">Tecnología</button><button class="pill" data-filter="Hogar" aria-pressed="false">Hogar</button></div><label class="sort-control">Ordenar <select id="sortSelect" aria-label="Ordenar productos"><option value="featured">Destacados</option><option value="priceAsc">Menor precio</option><option value="priceDesc">Mayor precio</option><option value="name">Nombre A-Z</option></select><svg><use href="#i-chevron"/></svg></label></div>
+    <div class="catalog-notice" id="catalogNotice" hidden></div>
+    <div class="product-grid" id="productGrid" aria-live="polite"><div class="loading-products">Preparando cosas lindas para vos... <span>✳</span></div></div>
+    <div class="catalog-more"><button class="button button-outline" id="showAll" hidden>Ver toda la colección <svg><use href="#i-arrow"/></svg></button></div>
+  </section>
+
+  <section class="wide editorial-section" id="nosotros"><div class="editorial-photo"><img loading="lazy" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=83" alt="Inspiración personal de moda y accesorios"><div class="editorial-photo-label">MAJUMI / EDITION 01</div></div><div class="editorial-copy"><div class="eyebrow">✳ MÁS QUE UNA COMPRA</div><h2>Las cosas lindas <em>se comparten.</em></h2><p>Creemos que cada detalle cuenta: un regalo inesperado, ese accesorio que te representa o algo que simplemente te alegra el día.</p><p>Majumi es ese rincón donde venís a mirar y terminás encontrando algo que parece hecho para vos.</p><a class="button button-dark" href="#favoritos">Encontrá tu favorito <svg><use href="#i-arrow"/></svg></a><span class="editorial-decoration">✳</span></div></section>
+
+  <section class="wide shopping-note"><div class="note-heading"><span>✳</span><h2>Comprar con onda,<br>sin complicaciones.</h2></div><div class="note-points"><div><span>01</span><h3>Explorá</h3><p>Buscá, descubrí y guardá tus favoritos.</p></div><div><span>02</span><h3>Elegí</h3><p>Sumá tus productos al carrito.</p></div><div><span>03</span><h3>Coordiná</h3><p>Tu pedido y la entrega se confirman con la tienda.</p></div></div></section>
+</main>
+
+<footer class="footer"><div class="wide footer-inner"><div><a class="brand footer-brand" href="./"><span class="brand-star">✳</span><span class="brand-main">majumi<span class="brand-dot">.</span><small>SHOP</small></span></a><p>Tu rincón de cosas lindas.<br>Descubrí, elegí, volvé a enamorarte.</p></div><div class="footer-right"><div><strong>EXPLORÁ</strong><a href="#colecciones">Colecciones</a><a href="#favoritos">Productos</a><a href="#nosotros">Nuestra esencia</a></div><div><strong>INFORMACIÓN</strong><a href="./admin.html">Administración</a><span>Disponibilidad y envío a confirmar</span><span>Precios en pesos argentinos</span></div></div></div><div class="wide footer-bottom"><span>© <span id="year"></span> MAJUMI SHOP · HECHO CON AMOR ✳</span><span>UNA TIENDA PARA VOS.</span></div></footer>
+
+<div id="pageShade" class="page-shade" hidden></div>
+<aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu carrito" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">MI SELECCIÓN</p><h2>Tu carrito <span id="drawerCount">(0)</span></h2></div><button class="icon-button" id="closeCart" aria-label="Cerrar carrito"><svg><use href="#i-close"/></svg></button></div><div class="drawer-content" id="cartContents"></div><div class="drawer-footer" id="cartFooter"></div></aside>
+<div class="modal-layer" id="productLayer" hidden><div class="modal-card" id="productModal" role="dialog" aria-modal="true" aria-label="Detalle de producto"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script type="module" src="./store.js?v=2"></script>
+</body>
+</html>
