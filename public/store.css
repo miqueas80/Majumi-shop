@@ -35,3 +35,24 @@ a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}b
 @supports (content-visibility:auto){.categories-section,.products-section,.shopping-note{content-visibility:auto;contain-intrinsic-size:auto 700px}}
 @supports selector(:focus-visible){.icon-button:focus-visible,.product-title:focus-visible,.category-card:focus-visible{outline-offset:4px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Majumi IA: interfaz progresiva, accesible y compatible con móvil */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.assistant-launch{position:fixed;z-index:97;bottom:24px;right:26px;border:1px solid #e7cedd;border-radius:40px;background:#352735;color:white;display:flex;align-items:center;gap:11px;padding:14px 17px;font-size:12px;font-weight:800;box-shadow:0 14px 44px #34233344;transition:transform .2s}
+.assistant-launch:hover{transform:translateY(-3px)}.assistant-launch svg{height:20px;width:20px;color:#edd1df}.assistant-online{color:#f1bac9}
+.assistant-panel{position:fixed;z-index:98;bottom:83px;right:26px;width:min(390px,calc(100% - 26px));max-height:min(620px,calc(100dvh - 118px));background:#fffafc;box-shadow:0 22px 75px #35273535;border:1px solid #eadde6;display:flex;flex-direction:column;border-radius:18px;overflow:hidden}
+.assistant-head{background:#352735;color:white;padding:19px;display:flex;align-items:center;gap:12px}
+.assistant-avatar{border-radius:50%;background:#dcb6ce;color:#51364b;width:42px;height:42px;display:grid;place-items:center;font-size:22px}
+.assistant-head>div:nth-child(2){display:flex;flex-direction:column;line-height:1.5;flex:1}
+.assistant-head strong{font-size:14px}.assistant-head small{color:#ead0df;font-size:11px}
+.assistant-close{background:transparent;border:0;color:white;width:36px;height:36px;display:grid;place-items:center}.assistant-close svg{height:19px;width:19px}
+.assistant-conversation{padding:21px 17px;min-height:195px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:12px}
+.assistant-bubble{align-self:flex-start;font-size:12px;line-height:1.7;max-width:94%;white-space:pre-wrap;overflow-wrap:anywhere;padding:12px 15px;margin:0;border-radius:14px 14px 14px 3px;background:#f4eaf0;color:#4b3b47}
+.assistant-bubble.from-customer{align-self:flex-end;border-radius:14px 14px 3px 14px;background:#392d38;color:#fff}
+.assistant-chips{padding:4px 17px 15px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.assistant-chips button{white-space:nowrap;border:1px solid #e2d3dc;background:white;border-radius:50px;padding:8px 11px;font-size:10px;color:#78566a}
+.assistant-form{display:flex;align-items:stretch;padding:10px 15px;border-top:1px solid #f0e7ec;gap:8px}
+.assistant-form input{flex:1;border:1px solid #e3d8dd;min-width:0;border-radius:9px;padding:13px;background:#fff;font-size:12px;outline-color:#ad7c9b}
+.assistant-form button{border:0;border-radius:8px;background:#352735;color:white;width:46px;display:grid;place-items:center}.assistant-form button svg{width:18px}
+.assistant-privacy{font-size:9px;text-align:center;color:#84717d;padding:0 15px 12px;margin:0}
+@media(max-width:620px){.assistant-launch{right:16px;bottom:16px;padding:11px 13px}.assistant-launch>span:nth-child(2){font-size:11px}.assistant-panel{right:12px;left:12px;bottom:74px;width:auto;max-height:min(620px,calc(100dvh - 102px))}}

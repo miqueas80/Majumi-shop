@@ -32,3 +32,18 @@ test('webhook de Mercado Pago: firma, importe y cuenta verificados antes de marc
 });
 
 test('imágenes de producto: guardado, publicación y validación HTTPS',async()=>{const env=makeEnv(),c=await signIn(env),s=await addSupplier(env,c),id=await addProduct(env,c,s);const get=await call(env,'/products');assert.equal(get.data.products[0].image_url,'https://images.example.com/bolso.webp');const bad=await call(env,'/admin/products/'+id,'PATCH',{sku:'MJ-101',name:'Bolso elegante',price_cents:1200000,stock:4,image_url:'javascript:alert(1)',supplier_id:s},c);assert.equal(bad.status,400);const updated=await call(env,'/admin/products/'+id,'PATCH',{sku:'MJ-101',name:'Bolso elegante',price_cents:1200000,stock:4,image_url:'https://cdn.example.com/producto.jpg',supplier_id:s},c);assert.equal(updated.status,200);assert.equal((await call(env,'/products')).data.products[0].image_url,'https://cdn.example.com/producto.jpg');});
+
+test('Majumi IA respeta origen, cupo, falta de clave y sólo transmite catálogo público',async()=>{
+ const env=makeEnv();
+ assert.equal((await call(env,'/assistant','POST',{message:'Busco un regalo'})).status,503);
+ env.XKIRO_API_KEY='TEST_private_key';env.XKIRO_MODEL='deepseek/deepseek-v3.2';
+ assert.equal((await call(env,'/assistant','POST',{message:'Busco un regalo'},null,'https://evil.example')).status,403);
+ const c=await signIn(env),s=await addSupplier(env,c);await addProduct(env,c,s);
+ const original=globalThis.fetch;let sentBody;
+ try{
+  globalThis.fetch=async(url,opts)=>{assert.equal(url,'https://api.xkiro.com/v1/chat/completions');assert.equal(opts.headers.authorization,'Bearer TEST_private_key');sentBody=JSON.parse(opts.body);return new Response(JSON.stringify({choices:[{message:{content:'Te puede gustar el Bolso de cuero, a $12.500 ARS. Precio y stock sujetos a confirmación.'}}]}),{status:200});};
+  const out=await call(env,'/assistant','POST',{message:'Quiero un bolso barato'});
+  assert.equal(out.status,200);assert.equal(out.data.source,'xkiro');assert.match(out.data.answer,/Bolso de cuero/);
+  assert.match(JSON.stringify(sentBody),/Bolso de cuero/);assert.ok(!JSON.stringify(sentBody).includes(env.ADMIN_PASSWORD));assert.ok(!JSON.stringify(sentBody).includes(env.XKIRO_API_KEY));
+ }finally{globalThis.fetch=original;}
+});

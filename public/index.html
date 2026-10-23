@@ -90,6 +90,16 @@
 
 <footer class="footer"><div class="wide footer-inner"><div><a class="brand footer-brand" href="./"><span class="brand-star">✳</span><span class="brand-main">majumi<span class="brand-dot">.</span><small>SHOP</small></span></a><p>Tu rincón de cosas lindas.<br>Descubrí, elegí, volvé a enamorarte.</p></div><div class="footer-right"><div><strong>EXPLORÁ</strong><a href="#colecciones">Colecciones</a><a href="#favoritos">Productos</a><a href="#nosotros">Nuestra esencia</a></div><div><strong>INFORMACIÓN</strong><a href="./admin.html">Administración</a><span>Disponibilidad y envío a confirmar</span><span>Precios en pesos argentinos</span></div></div></div><div class="wide footer-bottom"><span>© <span id="year"></span> MAJUMI SHOP · HECHO CON AMOR ✳</span><span>UNA TIENDA PARA VOS.</span></div></footer>
 
+<button class="assistant-launch" id="assistantToggle" aria-expanded="false" aria-controls="assistantPanel" aria-label="Abrir asistente de Majumi"><svg><use href="#i-sparkle"/></svg><span>¿Te ayudo a elegir?</span><span class="assistant-online">✦</span></button>
+<section class="assistant-panel" id="assistantPanel" role="dialog" aria-labelledby="assistantTitle" aria-modal="false" hidden>
+  <div class="assistant-head"><div class="assistant-avatar">✳</div><div><strong id="assistantTitle">Majumi IA</strong><small id="assistantStatus">Tu asistente de compras</small></div><button class="assistant-close" id="assistantClose" type="button" aria-label="Cerrar asistente"><svg><use href="#i-close"/></svg></button></div>
+  <div class="assistant-conversation" id="assistantMessages" aria-live="polite" aria-relevant="additions text">
+    <p class="assistant-bubble from-ai">¡Hola! Soy el asistente de Majumi. Contame qué buscás y te ayudo a encontrar opciones del catálogo. ✳</p>
+  </div>
+  <div class="assistant-chips"><button data-ask="Un regalo lindo" type="button">🎁 Ideas para regalar</button><button data-ask="Algo de belleza" type="button">✨ Belleza</button><button data-ask="Accesorios" type="button">👜 Accesorios</button></div>
+  <form class="assistant-form" id="assistantForm"><label for="assistantInput" class="sr-only">Consultá por productos</label><input id="assistantInput" name="message" placeholder="Preguntá por productos..." minlength="3" maxlength="350" autocomplete="off" required><button type="submit" aria-label="Enviar consulta"><svg><use href="#i-arrow"/></svg></button></form>
+  <p class="assistant-privacy">No compartas contraseñas ni datos de pago. Precios y stock sujetos a confirmación.</p>
+</section>
 <div id="pageShade" class="page-shade" hidden></div>
 <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu carrito" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">MI SELECCIÓN</p><h2>Tu carrito <span id="drawerCount">(0)</span></h2></div><button class="icon-button" id="closeCart" aria-label="Cerrar carrito"><svg><use href="#i-close"/></svg></button></div><div class="drawer-content" id="cartContents"></div><div class="drawer-footer" id="cartFooter"></div></aside>
 <div class="modal-layer" id="productLayer" hidden><div class="modal-card" id="productModal" role="dialog" aria-modal="true" aria-label="Detalle de producto"></div></div>

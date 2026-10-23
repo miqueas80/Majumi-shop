@@ -1,3 +1,15 @@
+# Majumi IA · recomendaciones con modelo externo (opcional)
+
+La interfaz ofrece un asistente de productos. En GitHub Pages usa únicamente recomendaciones locales de demostración; **no es IA generativa real**. En Cloudflare Worker se activa usando la API oficial de xKiro: https://docs.xkiro.com/api/chat-completions/ .
+
+1. Configurá un secreto privado en la cuenta Cloudflare con `npx wrangler secret put XKIRO_API_KEY`.
+2. Elegí el ID del modelo mediante `XKIRO_MODEL` en `wrangler.jsonc`; verificá disponibilidad y costo antes de cambiarlo.
+3. Desplegá Worker y D1 como indica esta guía; probá `POST /api/assistant` desde la web.
+4. Límite de 25 consultas/hora por IP, 350 caracteres de consulta, respuesta máxima 330 tokens y timeout de 10 segundos.
+5. Sólo se transmiten al modelo la pregunta del cliente y hasta 50 productos públicos; no datos de cobros ni contraseñas. Las sugerencias no aprueban compras ni pagos.
+
+---
+
 # Majumi Control — tienda + centro administrativo (v1)
 
 ## Plataforma avanzada de Majumi Shop (2026)

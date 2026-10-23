@@ -98,3 +98,35 @@ if(typeof document!=='undefined')document.addEventListener('keydown',ev=>{
     if(typeof openSearch==='function')openSearch();
   }
 });
+
+// Asistente: recomendaciones basadas en catálogo. En Pages es búsqueda LOCAL de muestra.
+// La clave xKiro vive únicamente en un secreto de Cloudflare Workers.
+const assistantNode=$('assistantPanel'),assistantToggle=$('assistantToggle');
+function openAssistant(){assistantNode.hidden=false;assistantToggle.setAttribute('aria-expanded','true');$('assistantInput').focus();}
+function closeAssistant(){assistantNode.hidden=true;assistantToggle.setAttribute('aria-expanded','false');assistantToggle.focus();}
+function assistantBubble(text,kind='from-ai'){const el=document.createElement('p');el.className='assistant-bubble '+kind;el.textContent=String(text||'');$('assistantMessages').appendChild(el);el.scrollIntoView({block:'nearest'});return el;}
+let assistantBusy=false;
+async function askAssistant(question){
+ const q=String(question||'').trim().slice(0,350);
+ if(q.length<3||assistantBusy)return;
+ assistantBubble(q,'from-customer');
+ if(pagesDemo){
+  const matches=state.products.map(p=>({p,score:matchScore(p,q)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,3);
+  assistantBubble(matches.length?'Esta es una recomendación del buscador local de demostración, no de una IA generativa. Podés mirar: '+matches.map(x=>x.p.name+' ('+money(x.p.price_cents)+')').join(', ')+'.':'Esta es una demostración local. No encontré coincidencias claras: probá con accesorios, belleza o tecnología.');
+  searchFor(q);return;
+ }
+ assistantBusy=true;
+ const send=$('assistantForm').querySelector('button[type=submit]');send.disabled=true;
+ const pending=assistantBubble('Buscando opciones para vos…');
+ try{
+  const r=await fetch('/api/assistant',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({message:q}),signal:AbortSignal.timeout(12000)});
+  const data=await r.json().catch(()=>({}));
+  pending.textContent=r.ok&&typeof data.answer==='string'?data.answer:(data.error||'El asistente no está disponible ahora. Podés usar el buscador de productos.');
+ }catch{pending.textContent='No pudimos conectar con Majumi IA. Probá de nuevo o buscá en el catálogo.';}
+ finally{send.disabled=false;assistantBusy=false;}
+}
+assistantToggle.addEventListener('click',()=>assistantNode.hidden?openAssistant():closeAssistant());
+$('assistantClose').addEventListener('click',closeAssistant);
+$('assistantForm').addEventListener('submit',ev=>{ev.preventDefault();const field=$('assistantInput');const value=field.value;field.value='';askAssistant(value);});
+document.querySelectorAll('[data-ask]').forEach(b=>b.addEventListener('click',()=>askAssistant(b.dataset.ask)));
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!assistantNode.hidden)closeAssistant();});
