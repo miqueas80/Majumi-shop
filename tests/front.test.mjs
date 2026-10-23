@@ -8,8 +8,8 @@ test('PWA válida, rutas relativas y caché exclusivamente público',()=>{
  assert.equal(manifest.display,'standalone');assert.equal(manifest.start_url,'./');
  const html=load('public/index.html');
  assert.match(html,/href="\.\/manifest\.webmanifest"/);
- assert.match(html,/src="\.\/store\.js\?v=3"/);
- assert.match(html,/href="\.\/store\.css\?v=3"/);
+ assert.match(html,/src="\.\/store\.js\?v=4"/);
+ assert.match(html,/href="\.\/store\.css\?v=4"/);
  const sw=load('public/sw.js');assert.match(sw,/PUBLIC_ASSETS/);
  assert.match(sw,/rel\.startsWith\('admin'\)/);
  assert.match(sw,/url\.pathname\.includes\('\/api\/'\)/);

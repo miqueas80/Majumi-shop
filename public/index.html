@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=82" imagesrcset="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=700&q=80 700w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=82 1200w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=84 1600w" imagesizes="(max-width:620px) 100vw,50vw" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;650;700;750&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./store.css?v=3">
+<link rel="stylesheet" href="./store.css?v=4">
 </head>
 <body>
 <svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -96,7 +96,7 @@
   <div class="assistant-conversation" id="assistantMessages" aria-live="polite" aria-relevant="additions text">
     <p class="assistant-bubble from-ai">¡Hola! Soy el asistente de Majumi. Contame qué buscás y te ayudo a encontrar opciones del catálogo. ✳</p>
   </div>
-  <div class="assistant-chips"><button data-ask="Un regalo lindo" type="button">🎁 Ideas para regalar</button><button data-ask="Algo de belleza" type="button">✨ Belleza</button><button data-ask="Accesorios" type="button">👜 Accesorios</button></div>
+  <div class="assistant-chips"><button data-ask="regalo" type="button">🎁 Ideas para regalar</button><button data-ask="belleza" type="button">✨ Belleza</button><button data-ask="accesorios" type="button">👜 Accesorios</button></div>
   <form class="assistant-form" id="assistantForm"><label for="assistantInput" class="sr-only">Consultá por productos</label><input id="assistantInput" name="message" placeholder="Preguntá por productos..." minlength="3" maxlength="350" autocomplete="off" required><button type="submit" aria-label="Enviar consulta"><svg><use href="#i-arrow"/></svg></button></form>
   <p class="assistant-privacy">No compartas contraseñas ni datos de pago. Precios y stock sujetos a confirmación.</p>
 </section>
@@ -104,6 +104,6 @@
 <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu carrito" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">MI SELECCIÓN</p><h2>Tu carrito <span id="drawerCount">(0)</span></h2></div><button class="icon-button" id="closeCart" aria-label="Cerrar carrito"><svg><use href="#i-close"/></svg></button></div><div class="drawer-content" id="cartContents"></div><div class="drawer-footer" id="cartFooter"></div></aside>
 <div class="modal-layer" id="productLayer" hidden><div class="modal-card" id="productModal" role="dialog" aria-modal="true" aria-label="Detalle de producto"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<script type="module" src="./store.js?v=3"></script>
+<script type="module" src="./store.js?v=4"></script>
 </body>
 </html>
