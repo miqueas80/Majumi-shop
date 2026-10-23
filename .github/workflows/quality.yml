@@ -1,0 +1,27 @@
+name: Quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: API, UI and security tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check src/core.js
+          node --check src/worker.js
+          node --check public/store.js
+          node --check public/admin.js
+          node --check public/sw.js
+      - name: Automated tests
+        run: npm test

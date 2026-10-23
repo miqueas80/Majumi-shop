@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f7f5f2">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
 <meta name="description" content="Majumi Shop. Descubrí inspiración, tendencias y productos para regalarte o regalar.">
 <meta property="og:title" content="Majumi Shop | Cosas lindas para cada día">
 <meta property="og:description" content="Una tienda para descubrir lo que te encanta.">
@@ -11,8 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=82" imagesrcset="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=700&q=80 700w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=82 1200w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=84 1600w" imagesizes="(max-width:620px) 100vw,50vw" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;650;700;750&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./store.css?v=2">
+<link rel="stylesheet" href="./store.css?v=3">
 </head>
 <body>
 <svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -58,16 +62,16 @@
 <main>
   <section class="hero wide" aria-label="Bienvenida">
     <div class="hero-copy"><div class="hero-kicker"><span></span> UN UNIVERSO DE COSAS LINDAS</div><h1>Tu estilo.<br>Tu mundo.<br><em>Tu Majumi.</em></h1><p>Descubrí esos detalles que hacen especial lo cotidiano. Novedades, favoritos y pequeños hallazgos, todos en un solo lugar.</p><div class="hero-actions"><a class="button button-dark" href="#favoritos">Explorar la tienda <svg><use href="#i-arrow"/></svg></a><a class="hero-link" href="#colecciones">Ver colecciones <span>↗</span></a></div><div class="hero-stamp"><span class="stamp-asterisk">✳</span><span>Elegido<br>con amor</span></div></div>
-    <div class="hero-visual"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85" alt="Selección de moda y accesorios de estilo editorial" fetchpriority="high"><div class="hero-caption"><span>01 / 03</span><span>UN POCO DE TODO,<br>MUCHO DE VOS.</span></div><div class="hero-overlay-label">new things, good feelings <span>✳</span></div></div>
+    <div class="hero-visual"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=82" srcset="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=700&q=80 700w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=82 1200w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=84 1600w" sizes="(max-width:620px) 100vw,50vw" width="900" height="1100" decoding="async" alt="Selección de moda y accesorios de estilo editorial" fetchpriority="high"><div class="hero-caption"><span>01 / 03</span><span>UN POCO DE TODO,<br>MUCHO DE VOS.</span></div><div class="hero-overlay-label">new things, good feelings <span>✳</span></div></div>
   </section>
 
   <div class="trust-strip"><div class="wide trust-inner"><div><svg><use href="#i-sparkle"/></svg><span>Hallazgos que enamoran</span></div><span class="trust-dot">✳</span><div><svg><use href="#i-message"/></svg><span>Atención personalizada</span></div><span class="trust-dot">✳</span><div><svg><use href="#i-shield"/></svg><span>Pedidos con claridad</span></div></div></div>
 
   <section class="section wide categories-section" id="colecciones"><div class="section-heading"><div><p class="eyebrow">✳ ENCONTRÁ TU VIBE</p><h2>Un mundo para <em>descubrir.</em></h2></div><a href="#favoritos" class="text-link" data-go="Todos">Ver todos los productos <svg><use href="#i-arrow"/></svg></a></div>
     <div class="category-grid">
-      <a class="category-card category-one" href="#favoritos" data-go="Accesorios"><img loading="lazy" src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=82" alt="Cartera y accesorios de moda"><span class="category-label"><small>EXPLORAR</small><strong>Accesorios</strong></span><span class="round-arrow">↗</span></a>
-      <a class="category-card category-two" href="#favoritos" data-go="Belleza"><img loading="lazy" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=82" alt="Productos de belleza y cuidado personal"><span class="category-label"><small>RITUALES FAVORITOS</small><strong>Belleza</strong></span><span class="round-arrow">↗</span></a>
-      <a class="category-card category-three" href="#favoritos" data-go="Tecnología"><img loading="lazy" src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=900&q=82" alt="Auriculares y accesorios tecnológicos"><span class="category-label"><small>PARA TU DÍA A DÍA</small><strong>Tecnología</strong></span><span class="round-arrow">↗</span></a>
+      <a class="category-card category-one" href="#favoritos" data-go="Accesorios"><img loading="lazy" src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=400&q=76 400w, https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80 800w" sizes="(max-width:620px) 100vw,(max-width:890px) 50vw,33vw" width="700" height="820" decoding="async" alt="Cartera y accesorios de moda"><span class="category-label"><small>EXPLORAR</small><strong>Accesorios</strong></span><span class="round-arrow">↗</span></a>
+      <a class="category-card category-two" href="#favoritos" data-go="Belleza"><img loading="lazy" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=76 400w, https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800&q=80 800w" sizes="(max-width:620px) 100vw,(max-width:890px) 50vw,33vw" width="700" height="820" decoding="async" alt="Productos de belleza y cuidado personal"><span class="category-label"><small>RITUALES FAVORITOS</small><strong>Belleza</strong></span><span class="round-arrow">↗</span></a>
+      <a class="category-card category-three" href="#favoritos" data-go="Tecnología"><img loading="lazy" src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=400&q=76 400w, https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=800&q=80 800w" sizes="(max-width:620px) 100vw,(max-width:890px) 50vw,33vw" width="700" height="820" decoding="async" alt="Auriculares y accesorios tecnológicos"><span class="category-label"><small>PARA TU DÍA A DÍA</small><strong>Tecnología</strong></span><span class="round-arrow">↗</span></a>
     </div>
   </section>
 
@@ -90,6 +94,6 @@
 <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu carrito" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">MI SELECCIÓN</p><h2>Tu carrito <span id="drawerCount">(0)</span></h2></div><button class="icon-button" id="closeCart" aria-label="Cerrar carrito"><svg><use href="#i-close"/></svg></button></div><div class="drawer-content" id="cartContents"></div><div class="drawer-footer" id="cartFooter"></div></aside>
 <div class="modal-layer" id="productLayer" hidden><div class="modal-card" id="productModal" role="dialog" aria-modal="true" aria-label="Detalle de producto"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<script type="module" src="./store.js?v=2"></script>
+<script type="module" src="./store.js?v=3"></script>
 </body>
 </html>

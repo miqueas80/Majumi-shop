@@ -1,5 +1,18 @@
 # Majumi Control — tienda + centro administrativo (v1)
 
+## Plataforma avanzada de Majumi Shop (2026)
+
+La implementación prioriza **medidas reales** en vez de mezclar frameworks de forma arbitraria: PWA instalable, service worker **sólo para activos públicos** (jamás API/admin/pagos), CSS con renderizado diferido, imágenes responsive, encabezados CSP para Cloudflare Workers, búsqueda local con sugerencias, control de pagos y stock en D1, CI con Node 22 y tests. La entrada pública conserva compatibilidad con GitHub Pages. Cloudflare Workers es obligatorio para pedidos y pagos reales; GitHub Pages sólo muestra productos ficticios marcados como demostración.
+
+Para nuevas imágenes reales: subir una URL HTTPS desde el panel administrativo después de aplicar `migrations/0002_product_images.sql` usando `npm run db:remote`; el campo viaja de la API a la tienda sin bloquear los productos antiguos. Nunca guardar API keys en GitHub.
+
+### Metas técnicas verificables
+
+- Core Web Vitals a medir en dispositivo real: LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1. **No están certificados sin auditoría de campo.**
+- Control de regresión: `npm test` y GitHub Actions sobre cada push o PR.
+- Compatibilidad progresiva: la tienda debe funcionar incluso cuando el service worker o las fuentes externas no estén disponibles.
+- Modo offline: únicamente navegación/recursos del escaparate en caché; sin confirmar stock ni registrar ventas sin conexión.
+
 ## Vista de tienda — edición visual 2
 
 La portada de Majumi Shop fue rediseñada con un lenguaje visual editorial: hero fotográfico, categorías ilustradas, fichas de producto, búsqueda con tolerancia a errores, ordenamiento, favoritos y carrito. **La versión visible en GitHub Pages es una DEMO**, no un comercio habilitado para comprar: sus ocho productos, fotos y precios son ejemplos explícitamente identificados. No se cobran pagos ni se guardan pedidos de compradores en la demo.

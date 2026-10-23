@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Majumi Shop",
+  "short_name": "Majumi",
+  "description": "Una tienda para descubrir cosas lindas. El carrito de demostración funciona sin conexión.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#30242e",
+  "orientation": "any",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "shopping",
+    "lifestyle"
+  ]
+}

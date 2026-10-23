@@ -33,7 +33,8 @@ function lineItems(){return Object.entries(state.cart).map(([id,q])=>({p:getProd
 function getTotal(){return lineItems().reduce((n,x)=>n + x.p.price_cents*x.quantity,0);}
 function updateCounters(){const count=lineItems().reduce((n,x)=>n+x.quantity,0);$('cartCount').textContent=count;$('drawerCount').textContent='('+count+')';$('favoriteCount').textContent=state.favorites.size;$('favoriteCount').hidden=state.favorites.size===0;}
 function imageUrl(p){const u=p.image_url||'';return /^https:\/\/[a-z0-9.-]+\/\S+$/i.test(u)?u:'';}
-function productCard(p){const saved=state.favorites.has(String(p.id));const src=imageUrl(p);const badge=p.tag?'<span class="product-label">'+esc(p.tag)+'</span>':'';const image=src?'<img src="'+esc(src)+'" alt="'+esc(p.name)+'" loading="lazy" decoding="async">':'<div class="image-fallback">✳</div>';
+function productSrcSet(url){try{const u=new URL(url);if(u.hostname!=='images.unsplash.com')return '';const widths=[320,640,960];return widths.map(w=>{const x=new URL(u.href);x.searchParams.set('w',String(w));return esc(x.href)+' '+w+'w'}).join(', ');}catch{return '';}}
+function productCard(p){const saved=state.favorites.has(String(p.id));const src=imageUrl(p);const badge=p.tag?'<span class="product-label">'+esc(p.tag)+'</span>':'';const image=src?'<img src="'+esc(src)+'" srcset="'+productSrcSet(src)+'" sizes="(max-width:620px) 48vw,(max-width:890px) 33vw,25vw" width="680" height="820" alt="'+esc(p.name)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer">':'<div class="image-fallback">✳</div>';
 return '<article class="product-card"><div class="product-image" data-detail="'+esc(p.id)+'" role="button" tabindex="0" aria-label="Ver '+esc(p.name)+'">'+image+badge+
 '<button type="button" data-favorite="'+esc(p.id)+'" class="wish-btn'+(saved?' is-saved':'')+'" aria-label="'+(saved?'Quitar de favoritos':'Guardar favorito')+'" aria-pressed="'+saved+'">'+icon('i-heart')+'</button>'+
 '<button class="quick-add" type="button" data-add="'+esc(p.id)+'" '+(p.stock<1?'disabled':'')+'><span>'+(p.stock<1?'SIN STOCK':'AGREGAR AL CARRITO')+'</span>'+icon('i-plus')+'</button></div>'+
@@ -85,3 +86,15 @@ $('mobileNav').addEventListener('click',ev=>{if(ev.target.closest('a')){$('mobil
 document.addEventListener('submit',ev=>{if(ev.target.id==='checkoutForm'){ev.preventDefault();submitCheckout(ev.target);}});
 document.addEventListener('change',ev=>{if(ev.target.id==='deliveryMethod'){$('deliveryAddressWrap').hidden=ev.target.value!=='delivery';$('deliveryAddress').required=ev.target.value==='delivery';}if(ev.target.id==='paymentMethod'&&ev.target.value==='mercadopago'&&$('deliveryMethod').value==='delivery'){ev.target.value='manual';toast('Mercado Pago está disponible para retiro.');}if(ev.target.id==='deliveryMethod'&&ev.target.value==='delivery'&&$('paymentMethod').value==='mercadopago'){$('paymentMethod').value='manual';toast('Para envío, el pago se coordina con la tienda.');}});
 load();
+
+// Progressive enhancement: pages públicas pueden funcionar sin conexión.
+// Nunca se guardan peticiones de API, pagos ni datos administrativos en el service worker.
+if(typeof window!=='undefined' && typeof navigator!=='undefined' && 'serviceWorker' in navigator && location.protocol==='https:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{}),{once:true});
+}
+if(typeof document!=='undefined')document.addEventListener('keydown',ev=>{
+  if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='k'){
+    ev.preventDefault();
+    if(typeof openSearch==='function')openSearch();
+  }
+});
