@@ -37,7 +37,7 @@ La portada de Majumi Shop fue rediseñada con un lenguaje visual editorial: hero
 
 Proyecto **independiente de Base44**, preparado para desplegar en **Cloudflare Workers + D1**. Incluye tienda pública y panel privado conectados a una base de datos compartida. No requiere suscripción a Base44, pero **no importa ni lee automáticamente pedidos o productos de la aplicación original**.
 
-> Estado: código de primera implementación entregado y **7 pruebas automatizadas superadas** con un simulador de la API D1 sobre SQLite de Node 22. No se ha desplegado en tu cuenta Cloudflare ni se han probado cobros reales con Mercado Pago; falta configurar credenciales y ensayar los webhooks en sandbox antes de vender.
+> Estado: código de primera implementación entregado y **12 pruebas automatizadas incluidas** (9 pruebas de API/base de datos y 3 de interfaz/PWA). Las pruebas locales no sustituyen una verificación en Cloudflare. con un simulador de la API D1 sobre SQLite de Node 22. No se ha desplegado en tu cuenta Cloudflare ni se han probado cobros reales con Mercado Pago; falta configurar credenciales y ensayar los webhooks en sandbox antes de vender.
 
 ## Qué hace
 
@@ -109,7 +109,7 @@ Requiere Node 22 o posterior y una cuenta Cloudflare para el despliegue remoto.
    npm test
    ```
 
-   Los tests usan la SQLite integrada en Node 22. Si el sistema los ejecuta correctamente, aparecen **7 pruebas aprobadas**.
+   Los tests usan la SQLite integrada en Node 22. Si el sistema los ejecuta correctamente, aparecen **12 pruebas incluidas** (verificar resultado con npm test).
 
 ## Publicar en Cloudflare
 
@@ -165,7 +165,7 @@ Referencias técnicas oficiales:
 6. El administrador pulsa **Copiar orden** y envía el texto por WhatsApp, email u otro canal externo, por su cuenta. Sólo después de hacerlo pulsa **Marcar enviada**.
 7. El administrador mueve el pedido por los estados de preparación, listo y completado.
 
-**Esta entrega no envía mensajes a proveedores por sí sola y no tiene integración xKiro activada.** Es deliberado: ninguna IA ni automatización puede aprobar compras, marcar un cobro como acreditado o enviar órdenes en nombre del negocio sin tu control.
+**Esta entrega no envía mensajes a proveedores por sí sola; Majumi IA está integrada en código pero no se activa hasta configurar XKIRO_API_KEY en Cloudflare.** Es deliberado: ninguna IA ni automatización puede aprobar compras, marcar un cobro como acreditado o enviar órdenes en nombre del negocio sin tu control.
 
 ## Límites y pasos siguientes
 
@@ -173,7 +173,7 @@ Referencias técnicas oficiales:
 - **Sin envíos automáticos:** WhatsApp no es una API gratuita de envíos masivos; la preparación de mensajes es local al panel.
 - **Sin facturación/impuestos ni costos de flete:** requiere una siguiente fase antes de vender formalmente con despacho automático.
 - **Sin avisos push o Telegram:** posibles, pero requieren credenciales y configuración.
-- **Sin asistentes xKiro por ahora:** se puede agregar en una fase posterior sobre esta base. No debe exponerse su clave de API en el navegador.
+- **Majumi IA xKiro disponible tras configurar secretos:** el chatbot utiliza únicamente un catálogo público acotado y preguntas de productos, con límites por IP y un presupuesto diario de llamadas. Nunca coloques su clave de API en el navegador.
 - **No se han realizado pruebas reales en Cloudflare ni de pago de extremo a extremo.** Las pruebas incluidas ejercitan las rutas Worker con adaptador SQLite local, incluidos webhooks sintéticos de Mercado Pago.
 - **Un administrador inicialmente:** el esquema se puede extender a usuarios de equipo y roles.
 
