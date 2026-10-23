@@ -1,3 +1,17 @@
+## Majumi IA conectada — servicio propio en Cloudflare (23/10/2026)
+
+Existe un Worker separado del sistema NEXUS, desplegado como `majumi-ai-gateway`. URL pública del API: `https://majumi-ai-gateway.proyectomj11.workers.dev`; su estado técnico se consulta en `GET /health`. GitHub Pages llama `POST /api/assistant` con un JSON `{"message":"Busco un regalo"}` y origen permitido `https://miqueas80.github.io`.
+
+- **IA generativa real:** Workers AI (modelo Llama 3.1 8B FP8) funciona como respaldo sin API key externa, limitado por D1 (80 solicitudes globales/día y 8 por IP/día). El cupo de Workers AI de Cloudflare se gestiona en la cuenta y puede tener cargos fuera del tramo gratuito.
+- **Preferir xKiro:** configurar `XKIRO_API_KEY` como secreto del Worker `majumi-ai-gateway` dentro de Cloudflare; jamás pegarlo en GitHub Pages ni en el código. El modelo se ajusta con `XKIRO_MODEL`. Si falla xKiro, recurre a Workers AI. No reutilizar las claves del gateway de NEXUS.
+- **Catálogo:** mientras Majumi no tenga productos reales cargados en la base, el servidor usa ocho referencias **ficticias** identificadas como demostración. No se realizan compras ni pagos desde el asistente.
+- **Datos y seguridad:** se eliminan correos y teléfonos de consultas, el asistente solo responde sobre catálogo y el envío al proveedor se realiza en servidor. CORS restringido al GitHub Pages indicado. Se guarda un hash temporal de IP para límites, no la IP en claro.
+- **No confundas la conexión con operaciones comerciales:** la aplicación todavía necesita desplegar su propio sistema de ventas y cargar el inventario real en Cloudflare Workers.
+
+Archivo de despliegue: `wrangler.majumi-ai.jsonc`. Base D1: `majumi_control`. Migración: `migrations/0003_ai_usage.sql`. Comando para actualizar solo la IA: `npx wrangler deploy --config wrangler.majumi-ai.jsonc`. Para poner la clave: `npx wrangler secret put XKIRO_API_KEY --name majumi-ai-gateway`.
+
+---
+
 ## Majumi Motion Engine — animaciones para pantallas de hasta 120 Hz o más
 
 La versión 5 incorpora `public/motion.js`: transiciones con Web Animations API y CSS `transform`/`opacity`, entradas progresivas con `IntersectionObserver`, menú/buscador/carrito/asistente/modales reversibles, efectos de pulsación y detalles en productos. El motor usa el refresco natural del navegador y **no fija un límite de 60 FPS**. Respeta `prefers-reduced-motion`. También agrega microinteracciones en el panel administrativo.
